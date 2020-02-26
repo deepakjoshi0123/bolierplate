@@ -20,12 +20,18 @@ exports.postAddProducts = (req, res, next) => {
 exports.getProducts = (req, res, next) => {
     const currentPage = req.query.page || 1;
     const perPage = 3;
-    sequelize.query('select count(*) over(), name from table where condition', { model: Model });
-    product.findAll()
-        .then(products => {
-            res.json({ product: products });
-        })
+    let totalItems;
+    product.findAll({ where: { columnName: id } })
+        .then(result => {
+            const totalItems = result.count();
+            return product.find()
+                .skip((currentPage - 1) * perPage)
+                .limit(perPage)
+        }).then(products => {
+            res.json({ product: products })
+        });
 }
+
 //updating products
 exports.posteditproduct = (req, res, next) => {
     const ProductName = req.body.ProductName;

@@ -18,11 +18,3 @@ exports.postAddUsers = (req, res, next) => {
         console.log(err);
     });
 }
-exports.searchUserdetails = (req, res, next) => {
-    const fullName = req.body.fullName;
-    user.findAll({ where: { fullName: fullName } }).then(result => {
-        res.json({ user: result })
-    }).catch(err => {
-        console.log(err);
-    })
-}
