@@ -22,7 +22,8 @@ const user = sequelize.define('users', {
     fullName: {
         type: Sequelize.STRING,
         allowNull: false
-    }
+    },
+    tableName: 'users',
 });
 
 module.exports = user;
