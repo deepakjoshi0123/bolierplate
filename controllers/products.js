@@ -1,4 +1,4 @@
-const product = require('../model/product');
+const product = require('../model/products');
 
 //adding products 
 exports.postAddProducts = (req, res, next) => {
@@ -37,7 +37,7 @@ exports.posteditproduct = (req, res, next) => {
     const ProductName = req.body.ProductName;
     const ProductType = req.ProductType;
     const price = req.body.price;
-    const id = req.body.id;
+    const id = req.params.productId;
     product.findById(id)
         .then(product => {
             product.ProductName = ProductName;
@@ -50,7 +50,7 @@ exports.posteditproduct = (req, res, next) => {
         })
 }
 exports.postDelProduct = (req, res, next) => {
-    const id = req.body.id;
+    const id = req.params.productId;
     product.findById(id)
         .then(product => {
             return product.destroy();
@@ -64,7 +64,7 @@ exports.postDelProduct = (req, res, next) => {
 
 }
 exports.searchProductdetails = (req, res, next) => {
-    const ProductName = req.body.ProductName;
+    const ProductName = req.params.ProductName;
     user.findAll({ where: { ProductName: ProductName } }).then(result => {
         res.json({ user: result })
     }).catch(err => {
