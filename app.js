@@ -7,12 +7,12 @@ const userRoutes = require('./Routes/products')
 const User = require("./model/user");
 const Products = require("./model/products");
 const sequelize = require('./util/database');
-const app = express()
+const app = express();
 
 app.use(bodyParser.json());
 
 app.use('/', authRoutes);
-app.use('/users', userRoutes);
+app.use('/prod', userRoutes);
 
 //global error handler 
 app.use((error, req, res, next) => {

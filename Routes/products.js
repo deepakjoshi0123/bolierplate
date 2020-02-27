@@ -5,7 +5,7 @@ const prodController = require('../controllers/products')
 
 const router = express.Router();
 
-router.get('/products', prodController.getProducts)
+router.get('/products/:start', prodController.getProducts)
 
 router.post(
     '/addProduct',
@@ -22,10 +22,10 @@ router.post(
     prodController.postAddProducts
 );
 
-router.delete('/product/:productId', prodController.postDelProduct)
+router.delete('/product/:id', prodController.postDelProduct)
 
 router.post(
-    '/product/:productId',
+    '/product/:id',
     // [
     //     body('ProductName')
     //         .trim()
@@ -39,6 +39,6 @@ router.post(
     prodController.posteditproduct
 );
 
-router.post('/product/:productName', prodController.searchProductdetails)
+router.get('/product/:ProductName', prodController.searchProductdetails)
 
 module.exports = router;
