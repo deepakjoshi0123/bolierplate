@@ -1,4 +1,5 @@
-const path = require('path')
+// import express from 'express'
+// import bodyParser from 'body-parser'
 const express = require('express')
 const bodyParser = require('body-parser')
 
@@ -9,12 +10,24 @@ const Products = require("./model/products");
 const sequelize = require('./util/database');
 const app = express();
 
+
+
+// // import { LocaleService } from './internationalCalls/localeService.js';
+// // import i18n from './internationalCalls/Config.js';
+
+// const localeService = new LocaleService(i18n);
+// console.log(localeService.getLocales()); // ['en', 'el']
+// console.log(localeService.getCurrentLocale()); // 'en'
+// console.log(localeService.translate('Hello')); //  'Hello'
+// console.log(localeService.translatePlurals('You have %s message', 3));
+
+
 app.use(bodyParser.json());
 
 app.use('/', authRoutes);
 app.use('/prod', userRoutes);
 
-//global error handler 
+//global error handler
 app.use((error, req, res, next) => {
     console.log(error);
     const status = error.statusCode || 500;

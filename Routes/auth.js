@@ -7,26 +7,26 @@ const user = require('../model/user');
 
 router.post(
     '/signup',
-    // [
-    //     body('email')
-    //         .isEmail()
-    //         .withMessage('please enter a valid email ')
-    //         .custom((value, { req }) => {
-    //             return user.findAll({ where: { email: value } }).then(userDoc => {
-    //                 if (!userDoc) {
-    //                     return Promise.reject('E-MAIL ALREADY EXISTS')
-    //                 }
-    //             });
-    //         })
-    //         .normalizeEmail(),
-    //     body('password')
-    //         .trim()
-    //         .isLength({ min: 5 }),
-    //     body('name')
-    //         .trim()
-    //         .not()
-    //         .isEmpty()
-    // ],
+    [
+        body('email')
+            .isEmail()
+            .withMessage('please enter a valid email ')
+            .custom((value, { req }) => {
+                return user.findOne({ where: { email: value } }).then(userDoc => {
+                    if (userDoc) {
+                        return Promise.reject('E-MAIL ALREADY EXISTS')
+                    }
+                });
+            })
+            .normalizeEmail(),
+        body('password')
+            .trim()
+            .isLength({ min: 5 }),
+        body('fullName')
+            .trim()
+            .not()
+            .isEmpty()
+    ],
     authControl.signup
 );
 router.post('/login', authControl.login);

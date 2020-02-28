@@ -1,3 +1,4 @@
+//import "constant"
 const { validationResult } = require('express-validator/check')
 const user = require('../model/user');
 const jwt = require('jsonwebtoken');
@@ -5,7 +6,6 @@ const bcrypt = require('bcryptjs');
 
 //sends user profile after matching the email 
 exports.getProfile = (req, res, next) => {
-    console.log("hello world ")
     const email = req.body.email;
     console.log(email)
     user.findOne({ where: { email: email } })
@@ -33,12 +33,13 @@ exports.signup = (req, res, next) => {
     }
 
     if (!errors.isEmpty()) {
-        const error = new Error('validation failed ');
+        console.log(errors)
+        const error = new Error('validation failedre ');
         error.statusCode = 422;
         error.data = errors.array();
         throw error;
     }
-    s
+
     bcrypt.hash(password, 12)
         .then(hashedPw => {
             hashPass = hashedPw;
