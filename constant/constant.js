@@ -1,4 +1,3 @@
-//constant of product 
 const ProdAddSucc = "Product added successfully";
 const ProductUpd = "Product updated successfully";
 const ProductDel = "Product deleted successfully";
@@ -10,3 +9,12 @@ const passWrong = "wrong password inserted";
 //constants of admin
 const userAddSucc = "user added successfully";
 
+module.exports = {
+    ProdAddSucc: ProdAddSucc,
+    ProductUpd: ProductUpd,
+    ProductDel: ProductDel,
+    error: error,
+    emailNotfound: emailNotfound,
+    passWrong: passWrong,
+    userAddSucc: userAddSucc
+};

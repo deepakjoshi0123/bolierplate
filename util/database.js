@@ -6,10 +6,11 @@ const sequelize = new Sequelize('boilerplate', 'root', 'netzwelt', {
     port: 3306
 });
 
-// try {
-//     sequelize.authenticate()
-//     console.log('Connection has been established successfully.');
-// } catch (error) {
-//     console.error('Unable to connect to the database:', error);
-// }
+// const sequelize = new Sequelize('boilerplate', 'root', 'netzwelt', {
+//     dialect: 'process.env.DATABASE',
+//     host: 'process.env.HOST',
+//     port: 3306
+// });
 module.exports = sequelize;
+
+//process.env.SCHEMA, process.env.USERNAME, process.env.PASSWORD

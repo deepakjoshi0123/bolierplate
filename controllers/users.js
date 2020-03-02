@@ -3,102 +3,101 @@ const { validationResult } = require('express-validator/check')
 const user = require('../model/user');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-
+const logger = require('../logger')
+const myconst = require('../constant/constant')
 //sends user profile after matching the email 
-exports.getProfile = (req, res, next) => {
-    const email = req.body.email;
-    console.log(email)
-    user.findOne({ where: { email: email } })
-        .then(userProfile => {
-            res.json({ user: userProfile });
-        })
-        .catch(err => {
+
+class userController {
+    static getProfile = async (req, res, next) => {
+        const email = req.body.email;
+        try {
+            const user1 = await user.findOne({ where: { email: email } })
+            if (user1) {
+                res.json({ user: userProfile });
+            }
+        }
+        catch (err) {
             console.log(err)
-        })
-}
-// handles signup when users creates new profile 
-exports.signup = (req, res, next) => {
-    const email = req.body.email;
-    const password = req.body.password;
-    const repeatPassword = req.body.repeatPassword;
-    const country = req.body.country;
-    const fullName = req.body.fullName;
-    let hashPass;
-
-    const errors = validationResult(req);
-    let isErr = (password, repeatPassword) => {
-        if (password !== repeatPassword)
-            return false;
-        else true;
+        }
     }
+    // handles signup when users creates new profile 
+    static signup = async (req, res, next) => {
+        const email = req.body.email;
+        const password = req.body.password;
+        const country = req.body.country;
+        const fullName = req.body.fullName;
 
-    if (!errors.isEmpty()) {
-        console.log(errors)
-        const error = new Error('validation failedre ');
-        error.statusCode = 422;
-        error.data = errors.array();
-        throw error;
-    }
+        const errors = validationResult(req);
 
-    bcrypt.hash(password, 12)
-        .then(hashedPw => {
-            hashPass = hashedPw;
-            // slow it will have to wait till we get hassedpassword  --- resolve this 
-            user.create({
+        if (!errors.isEmpty()) {
+            logger.error(myconst.error);
+            const error = new Error(myconst.error);
+            error.statusCode = 422;
+            error.data = errors.array();
+            throw error;
+        }
+
+        try {
+            const hassedPw = await bcrypt.hash(password, 12);
+            logger.info('going to insert user in the database');
+            const user1 = await user.create({
                 email: email,
-                password: hashPass, // assign hashpass  it's coming undefined ----?????????????????????
+                password: hassedPw,
                 country: country,
                 fullName: fullName
-            }).then(result => {
-                console.log('usr added');
+            })
+            if (user1) {
+                logger.info('user inserted successfully')
                 res.json({ message: "user added successfully" })
-            }).catch(err => {
-                console.log(err);
-            });
-        })
-        .catch(err => {
-            console.log(err);
-        })
-}
-//handles login and creates token for him 
-exports.login = (req, res, next) => {
-    const email = req.body.email;
-    const password = req.body.password;
-    let loadedUser;
-    user.findOne({ where: { email: email } })
-        .then(users => {
-            if (!users) {
-                const error = new Error('A user with this email not found')
+            }
+        }
+        catch (error) {
+            if (!error.statusCode) {
+                error.statusCode = 422;
+            }
+            next(error);
+        }
+    }
+    //handles login and creates token for upcoming user
+    static login = async (req, res, next) => {
+
+        const email = req.body.email;
+        const password = req.body.password;
+        let loadedUser;
+        logger.info('entry to login function ')
+        try {
+            const user1 = await user.findOne({ where: { email: email } });
+
+            if (!user1) {
+                const error = new Error('A user with this email not found');
+                logger.error('User with this email not found');
                 error.statusCode = 401;
                 throw error;
             }
-            else {
-                loadedUser = users;
-                return bcrypt.compare(password, users.password);
-            }
-        })
-        .then(isEqual => {
+            const isEqual = await bcrypt.compare(password, user1.password);
             if (!isEqual) {
                 const error = new Error('wrong password');
+                logger.error('WRONG PASSWORD INSERTED');
                 error.statusCode = 401;
                 throw error;
             }
             const token = jwt.sign(
                 {
-                    email: loadedUser.email,
-                    userId: loadedUser.id
+                    email: user1.email,
+                    userId: user1.id
                 },
                 'hellow_WorldThere',
                 { expiresIn: '1h' }
             );
-            res.status(200).json({ token: token, userId: loadedUser.id });
-        })
-        .catch(err => {
-            if (!err.statusCode) {
-                err.statusCode = 500;
-            }
-            next(err);
-        });
-};
+            res.status(200).json({ token: token, userId: user1.id });
+            logger.info('token and id send as response');
+        }
+        catch (error) {
+            console.log(error);
+            next(error);
+        }
 
+    };
+}
+module.exports = userController;
 

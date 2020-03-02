@@ -1,15 +1,15 @@
 // import express from 'express'
 // import bodyParser from 'body-parser'
+
 const express = require('express')
 const bodyParser = require('body-parser')
-
+const morgan = require('morgan')
 const authRoutes = require('./Routes/auth')
 const userRoutes = require('./Routes/products')
 const User = require("./model/user");
 const Products = require("./model/products");
 const sequelize = require('./util/database');
 const app = express();
-
 
 
 // // import { LocaleService } from './internationalCalls/localeService.js';
@@ -21,8 +21,9 @@ const app = express();
 // console.log(localeService.translate('Hello')); //  'Hello'
 // console.log(localeService.translatePlurals('You have %s message', 3));
 
-
 app.use(bodyParser.json());
+
+app.use(morgan('combined'));
 
 app.use('/', authRoutes);
 app.use('/prod', userRoutes);
